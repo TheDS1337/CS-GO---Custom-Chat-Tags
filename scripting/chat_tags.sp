@@ -198,7 +198,6 @@ public void SQL_OnLoadQueryChecking(Handle owner, Handle hndl, const char[] erro
 	if( SQL_FetchRow(hndl) )
 	{
 		SQL_FetchString(hndl, 0, g_ClientTag[client], sizeof(g_ClientTag[]));
-		PrintToServer("Tag: %s", g_ClientTag[client]);
 	}
 }
 
