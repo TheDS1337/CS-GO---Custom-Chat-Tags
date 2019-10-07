@@ -5,7 +5,8 @@
 
 #pragma newdecls required
 
-#define SET_TAG_FLAGS "t"
+#define TAG_FLAGS ADMFLAG_CUSTOM6
+#define SERVER_TAG "{lightgreen}Server"
 
 #define MAXLENGTH_TAG 64
 #define MAXLENGTH_TRUE_TAG 16
@@ -57,7 +58,7 @@ public Action OnClientSetTagCmd(int client, int args)
 {
 	if( !CanClientHaveTag(client) )
 	{
-		PrintToChat(client, "You don't have access to this!");
+		CPrintToChat(client, "[%s{default}]: You don't have access to this!", SERVER_TAG);		
 		return Plugin_Handled;
 	}
 
@@ -71,7 +72,7 @@ public Action OnClientSetTagCmd(int client, int args)
 	
 	if( len > MAXLENGTH_TAG )
 	{
-		PrintToChat(client, "The tag is too long.");
+		CPrintToChat(client, "[%s{default}]: The tag is too long.", SERVER_TAG);
 		return Plugin_Handled;
 	}
 
@@ -79,12 +80,12 @@ public Action OnClientSetTagCmd(int client, int args)
 	
 	if( strlen(actualTag) > MAXLENGTH_TRUE_TAG )
 	{
-		PrintToChat(client, "The tag is too long.");
+		CPrintToChat(client, "[%s{default}]: The tag is too long.", SERVER_TAG);
 		return Plugin_Handled;
 	}
 
 	GetCmdArgString(g_ClientTag[client], sizeof(g_ClientTag[]));	
-	PrintToChat(client, "Your tag is set!");
+	CPrintToChat(client, "[%s{default}]: Your tag is set!", SERVER_TAG);
 
 	return Plugin_Handled;
 }
@@ -215,19 +216,5 @@ bool CanClientHaveTag(int client)
 		return false;
 	}
 
-	AdminId admindId = GetUserAdmin(client);
-
-	if( admindId == INVALID_ADMIN_ID )
-	{
-		return false;
-	}
-
-	int flags = ReadFlagString(SET_TAG_FLAGS);
-
-	if( !(GetUserFlagBits(client) & flags) )
-	{		
-		return false;
-	}
-
-	return true;
+	return GetUserFlagBits(client) & TAG_FLAGS;
 }
