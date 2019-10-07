@@ -25,9 +25,9 @@ char g_ClientTag[MAXPLAYERS + 1][MAXLENGTH_TAG];
 
 public void OnPluginStart()
 {
-	RegConsoleCmd("sm_tag", OnClientSetTagCmd);
-	RegConsoleCmd("sm_tagme", OnClientSetTagCmd);
-	RegConsoleCmd("sm_settag", OnClientSetTagCmd);
+	RegAdminCmd("sm_tag", OnClientSetTagCmd, TAG_FLAGS);
+	RegAdminCmd("sm_tagme", OnClientSetTagCmd, TAG_FLAGS);
+	RegAdminCmd("sm_settag", OnClientSetTagCmd, TAG_FLAGS);
 
 	g_SQLDatabase = SQL_Initiate();
 }
@@ -216,5 +216,5 @@ bool CanClientHaveTag(int client)
 		return false;
 	}
 
-	return GetUserFlagBits(client) & TAG_FLAGS;
+	return CheckCommandAccess(client, "sm_tagme", TAG_FLAGS);
 }
