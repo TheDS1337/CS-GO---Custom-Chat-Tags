@@ -150,8 +150,8 @@ void SQL_LoadTags(int client)
 		return;
 	}
 
-	char steamId[96];
-	GetClientAuthId(client, AuthId_SteamID64, steamId, sizeof(steamId));
+	char steamId[32];
+	GetClientAuthId(client, AuthId_Steam2, steamId, sizeof(steamId));
 
 	char buffer[256];
 	Format(buffer, sizeof(buffer), "SELECT tag FROM chattags WHERE steamid = '%s'", steamId);
@@ -197,7 +197,8 @@ public void SQL_OnLoadQueryChecking(Handle owner, Handle hndl, const char[] erro
 
 	if( SQL_FetchRow(hndl) )
 	{
-		SQL_FetchString(hndl, 1, g_ClientTag[client], sizeof(g_ClientTag[]));
+		SQL_FetchString(hndl, 0, g_ClientTag[client], sizeof(g_ClientTag[]));
+		PrintToServer("Tag: %s", g_ClientTag[client]);
 	}
 }
 
