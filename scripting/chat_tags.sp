@@ -68,9 +68,8 @@ public Action OnClientSetTagCmd(int client, int args)
 	}	
 
 	char actualTag[MAXLENGTH_TAG];
-	int len = GetCmdArgString(actualTag, sizeof(actualTag));
-	
-	if( len > MAXLENGTH_TAG )
+		
+	if( GetCmdArgString(actualTag, sizeof(actualTag)) > MAXLENGTH_TAG )
 	{
 		CPrintToChat(client, "[%s{default}]: The tag is too long.", SERVER_TAG);
 		return Plugin_Handled;
@@ -94,7 +93,7 @@ public Action CP_OnChatMessage(int& author, ArrayList recipients, char[] flagstr
 {
 	if( !CanClientHaveTag(author) )
 	{
-		return Plugin_Handled;
+		return Plugin_Continue;
 	}
 
 	if( strlen(g_ClientTag[author]) > 0 )
