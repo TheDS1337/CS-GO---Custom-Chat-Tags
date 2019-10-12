@@ -98,7 +98,12 @@ public Action CP_OnChatMessage(int& author, ArrayList recipients, char[] flagstr
 
 	if( strlen(g_ClientTag[author]) > 0 )
 	{
-		Format(name, MAXLENGTH_NAME, "{default}[%s{default}]{teamcolor} %s", g_ClientTag[author], name);
+		static char formatedName[MAXLENGTH_NAME];
+		FormatName(name, formatedName, MAXLENGTH_NAME);
+
+		Format(name, MAXLENGTH_NAME, "{default}[%s{default}] %s", g_ClientTag[author], formatedName);
+
+		processcolors = true;
 		return Plugin_Changed;
 	}
 
@@ -216,4 +221,46 @@ bool CanClientHaveTag(int client)
 	}
 
 	return CheckCommandAccess(client, "sm_tagme", TAG_FLAGS);
+}
+
+// Fixes other colors induced from other plugins (this should have be done in CP)
+int FormatName(const char[] name, char[] formatedName, int maxLen)
+{
+	int firstBracket = -1, lastBracket = -1;
+
+	char color[32];
+	int colorPos = -1;
+
+	int len = strlen(name);
+	for( int i = 0; i < len; i++ )
+	{
+		if( name[i] == '{' )
+		{
+			firstBracket = i;
+		} 
+		else if( name[i] == '}' )
+		{
+			lastBracket = i;
+		}
+
+		if( firstBracket < 3 && i > firstBracket )
+		{
+			if( lastBracket == i )
+			{
+				break;
+			}
+
+			colorPos = i - firstBracket - 1;
+
+			color[colorPos] = name[i];
+			color[colorPos + 1] = '\0';
+		}
+	}
+
+	if( firstBracket != -1 && lastBracket != -1 && colorPos != -1 )
+	{		
+		return strcopy(formatedName, maxLen, name);		
+	}	
+
+	return Format(formatedName, maxLen, "{teamcolor}%s", name);	
 }
